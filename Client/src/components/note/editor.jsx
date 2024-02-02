@@ -9,8 +9,8 @@ import Draggable from "react-draggable";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import * as noteActions from "../../actions/user";
-import "./MyEditor.css"; // Import styles from a separate file
-import PropTypes from 'prop-types';
+import "./styles.scss"; // Import styles from a separate file
+import PropTypes from "prop-types";
 
 const EditorHeader = ({ onCloseModal }) => (
   <div className="header">
@@ -77,13 +77,13 @@ const MyEditor = ({ isModalOpen, handleClose, editorId, dateTime }) => {
       try {
         if (user?.data?._id) {
           const userData = user.data;
-          const response = await dispatch(
+          const response = dispatch(
             noteActions.fetchContent(userData._id, editorId)
           );
-          const data = response;
+
           if (isMounted) {
-            setEditorHtml(data?.content ?? ""); 
-            setTitle(data?.title ?? ""); 
+            setEditorHtml(response?.content ?? "");
+            setTitle(response?.title ?? "");
           }
         }
       } catch (error) {
@@ -110,7 +110,7 @@ const MyEditor = ({ isModalOpen, handleClose, editorId, dateTime }) => {
 
   const handleSaveClick = async () => {
     try {
-      const response = await dispatch(
+      const response = dispatch(
         noteActions.saveContent(editorHtml, title, user.data._id)
       );
 
@@ -126,7 +126,7 @@ const MyEditor = ({ isModalOpen, handleClose, editorId, dateTime }) => {
 
   const handleUpdateClick = async () => {
     try {
-      const response = await dispatch(
+      const response = dispatch(
         noteActions.updateContent(editorHtml, title, user.data._id, editorId)
       );
 
@@ -182,13 +182,12 @@ const MyEditor = ({ isModalOpen, handleClose, editorId, dateTime }) => {
   );
 };
 
-
 MyEditor.propTypes = {
   isModalOpen: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
   editorId: PropTypes.string, // Update the type accordingly
   dateTime: PropTypes.string.isRequired,
-}
+};
 
 EditorButtons.propTypes = {
   editorId: PropTypes.string, // Update the type accordingly

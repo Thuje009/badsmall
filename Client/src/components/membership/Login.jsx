@@ -14,6 +14,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import ForgetPassword from "./forgetPassword";
 import * as api from "../../api/axios";
 import "./styles.scss";
+import PropTypes from 'prop-types';
 
 // Move styles to a separate CSS file or use Styled Components
 const style = {
@@ -298,6 +299,9 @@ const Login = ({ isModalOpen }) => {
       )}
     </div>
   );
+};
+Login.propTypes = {
+  isModalOpen: PropTypes.bool.isRequired,
 };
 
 export default Login;

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+
 import {
   Dialog,
   DialogTitle,
@@ -73,7 +73,8 @@ const ForgetPassword = () => {
 
   return (
     <div>
-      <a onClick={openModal}>Forgot Password?</a>
+      <button onClick={openModal} type="button">Forgot Password?</button>
+
 
       <Dialog open={showModal} onClose={closeModal}>
         <ThemeProvider theme={theme}>

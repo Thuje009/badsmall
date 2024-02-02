@@ -5,9 +5,9 @@ import IconButton from "@mui/material/IconButton";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import "./styles.scss";
-import axios from "axios";
 import { useAuth } from "../../context/authContext";
 import * as api from "../../api/axios";
+import PropTypes from "prop-types";
 
 const Profile = ({ handleLogout }) => {
   const [showPasswordcurrentPassword, setShowPasswordcurrentPassword] =
@@ -29,7 +29,7 @@ const Profile = ({ handleLogout }) => {
     confirmPassword: "",
   });
 
-  const [ErrorTotal, setErrorTotal] = useState("");
+  const [errorTotal, setErrorTotal] = useState("");
 
   useEffect(() => {
     if (user?.data._id) {
@@ -45,23 +45,18 @@ const Profile = ({ handleLogout }) => {
       fetchUserData();
     }
   }, [BASE_URL, user?.data?._id, token]);
-  
+
   useEffect(() => {
     const handleVerificationChange = () => {
-      if (
-        userProfile &&
-        userProfile.data &&
-        userProfile.data.isVerified !== user.data.isVerified
-      ) {
+      if (userProfile?.data?.isVerified !== user?.data?.isVerified) {
         window.location.reload();
       }
     };
 
     window.addEventListener("isVerifiedChange", handleVerificationChange);
 
-    return () => {
+    return () =>
       window.removeEventListener("isVerifiedChange", handleVerificationChange);
-    };
   }, [userProfile, user?.data?.isVerified]);
 
   const validatePassword = (password) => {
@@ -121,19 +116,13 @@ const Profile = ({ handleLogout }) => {
     try {
       const response = await api.updatePassword(user.data._id, passwordForm);
       console.log("Password updated successfully", response.data.message);
-      // setFormError({});
       window.location.reload();
     } catch (error) {
       console.error("Error updating password:", error);
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        setErrorTotal(error.response.data.message);
-      } else {
-        setErrorTotal("Error updating password. Please try again.");
-      }
+      setErrorTotal(
+        error?.response?.data?.message ||
+          "Error updating password. Please try again."
+      );
     }
   };
 
@@ -160,22 +149,17 @@ const Profile = ({ handleLogout }) => {
 
   const handleResendVerification = async () => {
     try {
-      const email = userProfile?.data?.email; 
-      const response = await api.resendVerificationEmail(email);
+      const email = userProfile?.data?.email;
+      await api.resendVerificationEmail(email);
       window.location.reload();
       alert("Sent to your email successfully");
     } catch (error) {
       console.error("Error sending:", error);
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        setErrorTotal(error.response.data.message);
-        alert("Failed to send to your email", error.response.data.message);
-      } else {
-        setErrorTotal("Error updating password. Please try again.");
-      }
+      const errorMessage =
+        error?.response?.data?.message ||
+        "Error updating password. Please try again.";
+      setErrorTotal(errorMessage);
+      alert(`Failed to send to your email: ${errorMessage}`);
     }
   };
 
@@ -340,7 +324,7 @@ const Profile = ({ handleLogout }) => {
                   </div>
                 </div>
 
-                {ErrorTotal && <p style={{ color: "red" }}>{ErrorTotal}</p>}
+                {errorTotal && <p style={{ color: "red" }}>{errorTotal}</p>}
                 <div className="buttonChangePasswod">
                   <button type="submit" className="change-password-button">
                     Change Password
@@ -356,6 +340,10 @@ const Profile = ({ handleLogout }) => {
       </div>
     </div>
   );
+};
+
+Profile.propTypes = {
+  handleLogout: PropTypes.func.isRequired,
 };
 
 export default Profile;

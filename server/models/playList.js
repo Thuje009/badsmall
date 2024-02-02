@@ -1,18 +1,19 @@
 const mongoose = require("mongoose");
 const joi = require("joi");
 
-const Object = mongoose.Schema.Types.ObjectId;
+const ObjectId = mongoose.Schema.Types.ObjectId;
+
 
 const playListSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  user: { type: Object, ref: "user", required: true },
+  user: { type: ObjectId, ref: "user", required: true },
   desc: { type: String },
   songs: { type: Array, default: [] },
   img: { type: String },
 });
 
 const validate = (playList) => {
-  const schema = joi.object({
+  const schema = joi.ObjectId({
     name: joi.string().required(),
     user: joi.string().required(),
     desc: joi.string().allow(""),
